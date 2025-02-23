@@ -1,5 +1,17 @@
 # Network Infrastructure Variables
 
+variable "aws_access_key" {
+  description = "AWS access key"
+  type        = string
+  sensitive   = false
+}
+
+variable "aws_secret_key" {
+  description = "AWS secret key"
+  type        = string
+  sensitive   = false
+}
+
 variable "aws_region" {
   description = "AWS region where resources will be created"
   type        = string
