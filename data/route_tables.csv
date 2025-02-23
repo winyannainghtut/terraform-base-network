@@ -1,0 +1,5 @@
+name,subnet_name,destination_cidr,target_type,target_id
+public-rt,public-subnet-1,0.0.0.0/0,internet_gateway,igw
+public-rt,public-subnet-2,0.0.0.0/0,internet_gateway,igw
+private-rt,private-subnet-1,0.0.0.0/0,nat_gateway,natgw
+private-rt,private-subnet-2,0.0.0.0/0,nat_gateway,natgw

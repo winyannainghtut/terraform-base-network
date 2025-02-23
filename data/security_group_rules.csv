@@ -1,0 +1,7 @@
+group_name,type,protocol,from_port,to_port,cidr_blocks,source_security_groups
+web-sg,ingress,tcp,80,80,0.0.0.0/0,
+web-sg,ingress,tcp,443,443,0.0.0.0/0,
+web-sg,ingress,tcp,22,22,0.0.0.0/0,
+app-sg,ingress,tcp,8080,8080,,web-sg
+app-sg,ingress,tcp,22,22,10.0.0.0/16,
+db-sg,ingress,tcp,3306,3306,,app-sg

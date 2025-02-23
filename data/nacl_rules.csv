@@ -1,0 +1,7 @@
+subnet_name,rule_number,egress,protocol,rule_action,cidr_block,from_port,to_port
+public-subnet-1,100,false,tcp,allow,0.0.0.0/0,80,80
+public-subnet-1,110,false,tcp,allow,0.0.0.0/0,443,443
+public-subnet-1,120,false,tcp,allow,0.0.0.0/0,22,22
+public-subnet-1,100,true,tcp,allow,0.0.0.0/0,1024,65535
+private-subnet-1,100,false,tcp,allow,10.0.0.0/16,0,65535
+private-subnet-1,100,true,tcp,allow,0.0.0.0/0,0,65535

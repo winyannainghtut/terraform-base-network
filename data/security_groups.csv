@@ -1,0 +1,4 @@
+name,description
+web-sg,Security group for web servers
+app-sg,Security group for application servers
+db-sg,Security group for database servers

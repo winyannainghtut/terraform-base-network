@@ -1,0 +1,5 @@
+name,cidr_block,availability_zone
+public-subnet-1,10.0.1.0/24,ap-southeast-1a
+public-subnet-2,10.0.2.0/24,ap-southeast-1b
+private-subnet-1,10.0.3.0/24,ap-southeast-1a
+private-subnet-2,10.0.4.0/24,ap-southeast-1b
