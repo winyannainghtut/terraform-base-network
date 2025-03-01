@@ -62,3 +62,43 @@ module "security_groups" {
 
   depends_on = [module.vpc]
 }
+
+# NAT Gateway Module (for private subnet internet access)
+module "nat_gateway" {
+  source                  = "./modules/nat_gateway"
+  vpc_name                = var.vpc_name
+  environment             = var.environment
+  public_subnet_id        = module.subnets.subnet_ids["public-subnet-1"]
+  private_route_table_ids = [for name, id in module.route_tables.route_table_ids : id if can(regex("^private", name))]
+  internet_gateway_id     = module.vpc.internet_gateway_id
+
+  depends_on = [module.route_tables]
+}
+
+# VPC Flow Logs Module (for network traffic monitoring)
+module "vpc_flow_logs" {
+  source             = "./modules/vpc_flow_logs"
+  vpc_id             = module.vpc.vpc_id
+  vpc_name           = var.vpc_name
+  environment        = var.environment
+  traffic_type       = "ALL"
+  log_retention_days = 30
+
+  depends_on = [module.vpc]
+}
+
+# VPC Endpoints Module (for secure AWS service access)
+module "vpc_endpoints" {
+  source                      = "./modules/vpc_endpoints"
+  vpc_id                      = module.vpc.vpc_id
+  vpc_name                    = var.vpc_name
+  vpc_cidr                    = var.vpc_cidr
+  aws_region                  = var.aws_region
+  environment                 = var.environment
+  route_table_ids             = values(module.route_tables.route_table_ids)
+  private_subnet_ids          = [for name, id in module.subnets.subnet_ids : id if can(regex("^private", name))]
+  create_interface_endpoints  = true
+  interface_endpoint_services = ["ec2", "ecr.api", "ecr.dkr", "ssm", "logs"]
+
+  depends_on = [module.route_tables, module.subnets]
+}

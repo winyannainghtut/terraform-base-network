@@ -22,7 +22,7 @@ resource "aws_security_group" "this" {
 
 # Create security group rules
 resource "aws_security_group_rule" "this" {
-  for_each = { for rule in local.security_group_rules : "${rule.group_name}-${rule.type}-${rule.from_port}-${rule.to_port}-${rule.protocol}" => rule }
+  for_each = { for rule in local.security_group_rules : "${rule.group_name}-${rule.type}-${rule.from_port}-${rule.to_port}-${rule.protocol}-${rule.cidr_blocks}-${rule.source_security_groups}" => rule }
 
   type              = each.value.type
   from_port         = tonumber(each.value.from_port)
@@ -32,10 +32,24 @@ resource "aws_security_group_rule" "this" {
   security_group_id = aws_security_group.this[each.value.group_name].id
 
   source_security_group_id = try(length(each.value.source_security_groups) > 0 ? aws_security_group.this[each.value.source_security_groups].id : null, null)
+  description              = "Rule for ${each.value.group_name} - ${each.value.type} - ${each.value.protocol}:${each.value.from_port}-${each.value.to_port}"
 
   lifecycle {
     create_before_destroy = true
   }
+}
+
+# Add default egress rule for all security groups if not specified
+resource "aws_security_group_rule" "default_egress" {
+  for_each = aws_security_group.this
+
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = each.value.id
+  description       = "Default egress rule"
 }
 
 # Output security group IDs

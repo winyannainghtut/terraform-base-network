@@ -11,6 +11,9 @@ This infrastructure includes the following components:
 - Network ACLs with configurable rules
 - Security Groups with customizable ingress/egress rules
 - Route Tables for traffic management
+- NAT Gateway for private subnet internet access
+- VPC Flow Logs for network traffic monitoring
+- VPC Endpoints for secure AWS service access
 
 ## Prerequisites
 
@@ -32,7 +35,10 @@ This infrastructure includes the following components:
 │   ├── subnets/             # Subnet module
 │   ├── security_groups/      # Security Groups module
 │   ├── route_tables/        # Route Tables module
-│   └── nacls/               # Network ACLs module
+│   ├── nacls/               # Network ACLs module
+│   ├── nat_gateway/         # NAT Gateway module
+│   ├── vpc_flow_logs/       # VPC Flow Logs module
+│   └── vpc_endpoints/       # VPC Endpoints module
 ├── main.tf                  # Main configuration file
 ├── variables.tf             # Input variables
 ├── outputs.tf               # Output definitions
@@ -91,6 +97,21 @@ terraform apply
 - Configures inbound and outbound rules
 - Associates NACLs with subnets
 
+### NAT Gateway Module
+- Creates a NAT Gateway in a public subnet
+- Configures route tables for private subnets to route through the NAT Gateway
+- Enables internet access for resources in private subnets
+
+### VPC Flow Logs Module
+- Sets up VPC Flow Logs to capture network traffic information
+- Configures CloudWatch Logs for storing flow logs
+- Supports customizable traffic type and log retention period
+
+### VPC Endpoints Module
+- Creates VPC Endpoints for secure access to AWS services
+- Supports both Gateway and Interface endpoints
+- Configures endpoint security and routing
+
 ## Configuration
 
 The infrastructure can be customized through CSV files in the `data/` directory:
@@ -103,13 +124,20 @@ The infrastructure can be customized through CSV files in the `data/` directory:
 
 ## Outputs
 
-The infrastructure provides various outputs including:
+The infrastructure provides the following outputs for use in other modules or configurations:
 
-- VPC ID
-- Subnet IDs
-- Security Group IDs
-- Route Table IDs
-- Network ACL IDs
+- `vpc_id` - The ID of the created VPC
+- `public_subnet_ids` - A map of public subnet names to their IDs
+- `private_subnet_ids` - A map of private subnet names to their IDs
+- `security_group_ids` - IDs of all security groups created in the VPC
+- `public_route_table_ids` - A map of public route table names to their IDs
+- `private_route_table_ids` - A map of private route table names to their IDs
+
+Additional infrastructure components created but not exposed as outputs:
+- Network ACLs with rules defined in nacl_rules.csv
+- NAT Gateway for private subnet internet access
+- VPC Flow Logs for network traffic monitoring (30-day retention)
+- VPC Endpoints for secure AWS service access
 
 ## Contributing
 
